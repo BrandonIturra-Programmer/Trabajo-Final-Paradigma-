@@ -4,7 +4,11 @@
     "module": "commonjs",
     "lib": ["ES2020"],
     "outDir": "./dist",
+<<<<<<< HEAD
     "rootDir": "./src",
+=======
+    "rootDir": "./",
+>>>>>>> 3808a30d78cdb62e0b44ce807269d3d528b4ef07
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -13,8 +17,22 @@
     "types": ["node"],
     "sourceMap": true,
     "declaration": true,
+<<<<<<< HEAD
     "moduleResolution": "node"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
+=======
+    "moduleResolution": "bundler"
+  },
+  "include": [
+    "src/**/*",
+    "lib/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
+>>>>>>> 3808a30d78cdb62e0b44ce807269d3d528b4ef07
