@@ -6,16 +6,9 @@ import { Tarea } from './types';
  * Encapsula lectura, escritura y backups de archivo.
  */
 export class FileManager {
-  /**
-   * @param archivoTareas - Ruta al archivo JSON que contiene las tareas
-   */
+
   constructor(private readonly archivoTareas: string) {}
 
-  /**
-   * Guarda las tareas en el archivo JSON
-   * @param tareas - Array inmutable (readonly) de tareas a persistir
-   * @throws {Error} Si ocurre un error de IO
-   */
   guardarTareas(tareas: readonly Tarea[]): void {
     try {
       const datos = JSON.stringify(tareas, null, 2);
@@ -27,11 +20,6 @@ export class FileManager {
     }
   }
 
-
-  /**
-   * Carga tareas desde disco. Si el archivo no existe, devuelve []
-   * @returns {Tarea[]} Array mutable con las tareas cargadas
-   */
   cargarTareas(): Tarea[] {
     try {
       // Verificar si el archivo existe
@@ -51,18 +39,10 @@ export class FileManager {
     }
   }
 
-  /**
-   * Indica si el archivo de tareas existe en disco
-   * @returns {boolean}
-   */
   existeArchivoTareas(): boolean {
     return fs.existsSync(this.archivoTareas);
   }
 
-  /**
-   * Crea una copia de respaldo con timestamp (en el mismo directorio)
-   * @throws {Error} Si ocurre un error de IO
-   */
   crearBackup(): void {
     try {
       if (!this.existeArchivoTareas()) {

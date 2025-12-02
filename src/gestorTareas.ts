@@ -1,7 +1,3 @@
-/**
- * @fileoverview Gestor de tareas - Lógica de negocio
- * Paradigma: POO + Programación Funcional
- */
 
 import {
   Tarea,
@@ -23,6 +19,7 @@ import {
   esAltaPrioridad,
   estaEliminada
 } from './types';
+import { Predicate, esCritica } from './logica';
 
 import {
   validarStringNoVacio,
@@ -34,13 +31,8 @@ import {
   validarId
 } from './validators';
 
-import { Predicate, esCritica } from './logica';
 
-/**
- * Clase genérica para gestionar una colección de elementos
- * Paradigma: POO - Uso de genéricos para reutilización
- * @template T - Tipo de elementos a gestionar
- */
+//Clase genérica para gestionar una colección de elementos
 class GestorGenerico<T> {
   protected items: T[];
 
@@ -48,18 +40,10 @@ class GestorGenerico<T> {
     this.items = [...itemsIniciales];
   }
 
-  /**
-   * Obtiene todos los elementos de forma inmutable
-   * @returns Array de solo lectura con todos los elementos
-   */
   obtenerTodos(): readonly T[] {
     return Object.freeze([...this.items]);
   }
 
-  /**
-   * Obtiene la cantidad total de elementos
-   * @returns Número de elementos en la colección
-   */
   obtenerCantidad(): number {
     return this.items.length;
   }
@@ -87,18 +71,6 @@ export class GestorTareas extends GestorGenerico<Tarea> {
   }
 
   // ============ OPERACIONES CRUD ============
-
-  /**
-   * Agrega una nueva tarea al sistema
-   * @param titulo - Título de la tarea (mínimo 3 caracteres)
-   * @param descripcion - Descripción opcional de la tarea
-   * @param estado - Estado inicial de la tarea
-   * @param dificultad - Nivel de dificultad de la tarea
-   * @param prioridad - Nivel de prioridad de la tarea
-   * @param fechaVencimiento - Fecha límite opcional (timestamp)
-   * @returns La tarea creada
-   * @throws {Error} Si alguna validación falla
-   */
   agregar(
     titulo: string,
     descripcion: string = "",
@@ -128,24 +100,12 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     return nuevaTarea;
   }
 
-  /**
-   * Busca una tarea por su ID
-   * @param id - Identificador único de la tarea
-   * @returns La tarea encontrada o undefined si no existe o está eliminada
-   */
+
   buscarPorId(id: string): Tarea | undefined {
     return this.items.find(t => t.id === id && !t.eliminada);
   }
 
-  /**
-   * Actualiza una tarea aplicando una función de transformación
-   * Paradigma: Funcional - Función de orden superior
-   * @param id - ID de la tarea a actualizar
-   * @param transformacion - Función que transforma la tarea
-   * @returns La tarea actualizada
-   * @throws {Error} Si la tarea no se encuentra
-   * @private
-   */
+
   private actualizarTarea(id: string, transformacion: (tarea: Tarea) => Tarea): Tarea {
     validarId(id);
     
@@ -159,6 +119,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     return this.items[indice];
   }
 
+
   modificarTitulo(id: string, nuevoTitulo: string): Tarea {
     validarStringNoVacio(nuevoTitulo, 'título');
     validarLongitudMinima(nuevoTitulo, 3, 'título');
@@ -168,6 +129,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
   modificarDescripcion(id: string, nuevaDescripcion: string): Tarea {
     return this.actualizarTarea(id, t => actualizarDescripcion(t, nuevaDescripcion));
   }
+
 
   cambiarEstado(id: string, nuevoEstado: EstadoTarea): Tarea {
     validarEstado(nuevoEstado);
@@ -199,6 +161,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     this.items = this.items.filter(t => t.id !== id);
     return this.items.length < indiceInicial;
   }
+
 
   restaurar(id: string): Tarea {
     validarId(id);
@@ -234,6 +197,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     this.actualizarTarea(idTarea2, t => agregarRelacion(t, idTarea1));
   }
 
+
   desrelacionarTareas(idTarea1: string, idTarea2: string): void {
     validarId(idTarea1);
     validarId(idTarea2);
@@ -241,6 +205,8 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     this.actualizarTarea(idTarea1, t => quitarRelacion(t, idTarea2));
     this.actualizarTarea(idTarea2, t => quitarRelacion(t, idTarea1));
   }
+
+  // ============ ORDENAMIENTO ============
 
   ordenar(criterio: 'titulo' | 'fechaCreacion' | 'fechaVencimiento' | 'dificultad'): readonly Tarea[] {
     const tareasActivas = this.obtenerActivas();
@@ -258,6 +224,8 @@ export class GestorTareas extends GestorGenerico<Tarea> {
 
     return Object.freeze([...tareasActivas].sort(ordenadores[criterio]));
   }
+
+  // ============ CONSULTAS Y FILTROS ============
 
   obtenerActivas(): readonly Tarea[] {
     return Object.freeze(this.items.filter(t => !estaEliminada(t)));
@@ -295,12 +263,14 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     );
   }
 
+
   filtrarPorEstado(estado: EstadoTarea): readonly Tarea[] {
     validarEstado(estado);
     return Object.freeze(
       this.items.filter(t => !estaEliminada(t) && t.estado === estado)
     );
   }
+
 
   filtrarPorDificultad(dificultad: DificultadTarea): readonly Tarea[] {
     validarDificultad(dificultad);
@@ -309,10 +279,13 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     );
   }
 
+  // ============ ESTADÍSTICAS ============
+
   obtenerEstadisticas() {
     const activas = this.obtenerActivas();
     const total = activas.length;
 
+    // Estadísticas por estado usando reduce
     const porEstado = Object.values(EstadoTarea)
       .filter((v): v is EstadoTarea => typeof v === 'number')
       .reduce((acc, estado) => {
@@ -324,6 +297,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
         return acc;
       }, {} as Record<EstadoTarea, { cantidad: number; porcentaje: number }>);
 
+    // Estadísticas por dificultad usando reduce
     const porDificultad = Object.values(DificultadTarea)
       .filter((v): v is DificultadTarea => typeof v === 'number')
       .reduce((acc, dificultad) => {
