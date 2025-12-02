@@ -101,7 +101,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     const indice = this.items.findIndex(t => t.id === id);
     
     if (indice === -1) {
-      throw new Error(No se encontró la tarea con ID: ${id});
+      throw new Error(`No se encontró la tarea con id: ${id}`);
     }
 
     this.items[indice] = transformacion(this.items[indice]);
@@ -176,7 +176,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     const indice = this.items.findIndex(t => t.id === id);
     
     if (indice === -1) {
-      throw new Error(No se encontró la tarea con ID: ${id});
+      throw new Error(`No se encontró la tarea con ID: ${id}`);
     }
 
     this.items[indice] = restaurarTarea(this.items[indice]);
@@ -275,7 +275,7 @@ export class GestorTareas extends GestorGenerico<Tarea> {
     const tarea = this.buscarPorId(id);
     
     if (!tarea) {
-      throw new Error(No se encontró la tarea con ID: ${id});
+      throw new Error(`No se encontró la tarea con ID: ${id}`);
     }
 
     return Object.freeze(

@@ -31,7 +31,7 @@ export const cargarTareas = async (): Promise<Tarea[]> => {
     const datos = await fs.promises.readFile(ARCHIVO_TAREAS, 'utf-8');
     const tareas = JSON.parse(datos) as Tarea[];
     
-    console.log(✓ Se cargaron ${tareas.length} tareas desde el archivo);
+    console.log(`✓ Se cargaron ${tareas.length} tareas desde el archivo`);
     return tareas;
   } catch (error) {
     // Si el archivo no existe, retornar array vacío
@@ -71,10 +71,10 @@ export const crearBackup = async (): Promise<void> => {
     }
 
     const fecha = new Date().toISOString().replace(/[:.]/g, '-');
-    const archivoBackup = tareas_backup_${fecha}.json;
+    const archivoBackup = `tareas_backup_${fecha}.json`;
     
     await fs.promises.copyFile(ARCHIVO_TAREAS, archivoBackup);
-    console.log(✓ Backup creado: ${archivoBackup});
+    console.log(`✓ Backup creado: ${archivoBackup}`);
   } catch (error) {
     console.error('✗ Error al crear backup:', error);
     throw new Error('No se pudo crear el backup');
