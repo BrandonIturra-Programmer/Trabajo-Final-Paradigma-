@@ -1,0 +1,22 @@
+{
+  "name": "tp-final",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de tareas con TypeScript",
+  "main": "dist/src/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/src/main.js",
+    "dev": "tsc && node dist/src/main.js"
+  },
+  "keywords": ["tareas", "typescript", "oop"],
+  "author": "Brandon Iturra",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.22",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.9.3"
+  }
+}
